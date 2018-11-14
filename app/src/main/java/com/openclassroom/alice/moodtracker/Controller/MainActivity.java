@@ -1,11 +1,16 @@
 package com.openclassroom.alice.moodtracker.Controller;
 
+import android.annotation.SuppressLint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.openclassroom.alice.moodtracker.R;
@@ -15,7 +20,10 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     private static final float SWIPE_THRESHOLD = 100;
     private static final float SWIPE_VELOCITY_THRESHOLD = 100;
-    GestureDetector gestureDetector;
+    private GestureDetector gestureDetector;
+    private int mood;
+    private RelativeLayout mMainLayout;
+    private ImageView mSmiley;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +31,15 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         setContentView(R.layout.activity_main);
 
         gestureDetector = new GestureDetector(this);
+        mood=0;
+
+
+        mMainLayout = (RelativeLayout) findViewById(R.id.main_activity);
+        mSmiley = (ImageView) findViewById(R.id.main_activity_smiley_img);
+
+        displayMood(mood);
+        mMainLayout.setBackgroundColor(getResources().getColor(R.color.banana_yellow));
+
     }
 
 
@@ -66,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             }
             result= true;
         }
-
         return result;
     }
 
@@ -77,10 +93,39 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     }
 
     private void onSwipeTop() {
-        Toast.makeText(this, "Swipe Top", Toast.LENGTH_SHORT).show();
+        if (mood>0) {mood-=1;}
+        displayMood(mood);
+    }
+
+    private void displayMood(int mood) {
+        switch (mood) {
+            case 0:
+                mMainLayout.setBackgroundColor(getResources().getColor(R.color.banana_yellow));
+                mSmiley.setImageDrawable(getResources().getDrawable(R.drawable.smiley_super_happy));
+                break;
+            case 1:
+                mMainLayout.setBackgroundColor(getResources().getColor(R.color.light_sage));
+                mSmiley.setImageDrawable(getResources().getDrawable(R.drawable.smiley_happy));
+                break;
+            case 2:
+                mMainLayout.setBackgroundColor(getResources().getColor(R.color.cornflower_blue_65));
+                mSmiley.setImageDrawable(getResources().getDrawable(R.drawable.smiley_normal));
+                break;
+            case 3:
+                mMainLayout.setBackgroundColor(getResources().getColor(R.color.warm_grey));
+                mSmiley.setImageDrawable(getResources().getDrawable(R.drawable.smiley_disappointed));
+                break;
+            case 4:
+                mMainLayout.setBackgroundColor(getResources().getColor(R.color.faded_red));
+                mSmiley.setImageDrawable(getResources().getDrawable(R.drawable.smiley_sad));
+                break;
+            default :
+                Toast.makeText(this, "You have a pb" + mood, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void onSwipeBottom() {
-        Toast.makeText(this, "Swipe Bottom", Toast.LENGTH_SHORT).show();
+        if (mood<4) {mood+=1;}
+        displayMood(mood);
     }
 }
